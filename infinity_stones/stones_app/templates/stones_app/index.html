@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebSocket Status</title>
+</head>
+
+<body>
+    <h1>WebSocket Status</h1>
+
+    <form id="userForm">
+        <label for="user_id">User ID:</label>
+        <input type="text" id="user_id" required>
+
+        <label for="jwt_token">JWT Token:</label>
+        <input type="text" id="jwt_token" required>
+
+        <button type="button" onclick="connectWebSocket()">Check Status</button>
+    </form>
+
+    <div id="statusDisplay"></div>
+
+    <script>
+        const statusDisplay = document.getElementById('statusDisplay');
+        const userForm = document.getElementById('userForm');
+
+        function connectWebSocket() {
+            const user_id = document.getElementById('user_id').value;
+            const jwt_token = document.getElementById('jwt_token').value;
+            const socket = new WebSocket(`ws://127.0.0.1:8000/ws/ac/stone_status/${user_id}/${jwt_token}/`);
+
+            socket.onopen = () => {
+                statusDisplay.textContent = 'WebSocket connection opened.';
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.activation_status) {
+                    statusDisplay.textContent = `Activation Status: ${data.activation_status}`;
+                } else if (data.error) {
+                    statusDisplay.textContent = `Error: ${data.error}`;
+                }
+            };
+
+            socket.onclose = () => {
+                statusDisplay.textContent = 'WebSocket connection closed.';
+            };
+        }
+    </script>
+</body>
+
+</html>

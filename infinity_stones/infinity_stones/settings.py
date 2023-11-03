@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 DEFAULT_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +42,7 @@ DEFAULT_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_celery_results',
 ]
 REGISTERED_APPS = [
     'stones_app',
@@ -75,8 +77,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'infinity_stones.wsgi.application'
+# WSGI_APPLICATION = 'infinity_stones.wsgi.application'
 
+ASGI_APPLICATION = 'infinity_stones.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -135,7 +138,7 @@ CELERY_IMPORTS = [
     app_name+".tasks" for app_name in REGISTERED_APPS
 ]
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite3'
+CELERY_RESULT_BACKEND = 'django-db'
 
 # Rest Framework settings
 REST_FRAMEWORK = {
@@ -146,4 +149,14 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Set the access token lifetime as needed.
+}
+
+#CHANNEL SETUP
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
 }

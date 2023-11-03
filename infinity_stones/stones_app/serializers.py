@@ -17,7 +17,6 @@ class ActivationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
 # Custome Serializers
 class LoginRequestSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -27,3 +26,4 @@ class ActivateRequestSerializer(serializers.Serializer):
     stone_id = serializers.IntegerField()
     user_id = serializers.IntegerField()
     power_duration = serializers.IntegerField()
+    jwt_token = serializers.CharField()
